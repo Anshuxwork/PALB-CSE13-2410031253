@@ -1,55 +1,28 @@
-"""Problem 15: Valid Parentheses
+import math
 
-Given a string containing brackets, determine if it is valid.
-Valid means: opened brackets must be closed by correct type.
-
-Time Complexity: O(n)
-Space Complexity: O(n) - for stack storage
-"""
-
-def isValid(s):
-    """Checks if parentheses string is valid.
+def merge_arrays(a, b):
+    n = len(a)
+    m = len(b)
+    gap = math.ceil((n + m) / 2)
     
-    Args:
-        s: String containing parentheses
-    
-    Returns:
-        True if valid, False otherwise
-    """
-    # Mapping of closing to opening brackets
-    bracket_map = {')': '(', '}': '{', ']': '['}
-    stack = []
-    
-    for char in s:
-        if char in bracket_map:
-            # Closing bracket
-            if not stack or stack[-1] != bracket_map[char]:
-                return False
-            stack.pop()
+    while gap > 0:
+        i = 0
+        j = gap
+        
+        while j < n + m:
+            if j < n and a[i] > a[j]:
+                a[i], a[j] = a[j], a[i]
+            elif j >= n and i < n and a[i] > b[j - n]:
+                a[i], b[j - n] = b[j - n], a[i]
+            elif i >= n and b[i - n] > b[j - n]:
+                b[i - n], b[j - n] = b[j - n], b[i - n]
+            
+            i += 1
+            j += 1
+        
+        if gap == 1:
+            gap = 0
         else:
-            # Opening bracket
-            stack.append(char)
+            gap = math.ceil(gap / 2)
     
-    return len(stack) == 0
-
-
-if __name__ == "__main__":
-    # Test Case 1
-    s1 = "()"
-    result1 = isValid(s1)
-    print(f"Test 1 - String: '{s1}'")
-    print(f"Result: Is valid = {result1}")
-    print()
-    
-    # Test Case 2
-    s2 = "()[]{}"
-    result2 = isValid(s2)
-    print(f"Test 2 - String: '{s2}'")
-    print(f"Result: Is valid = {result2}")
-    print()
-    
-    # Test Case 3
-    s3 = "([)]"
-    result3 = isValid(s3)
-    print(f"Test 3 - String: '{s3}'")
-    print(f"Result: Is valid = {result3}")
+    return a, b
